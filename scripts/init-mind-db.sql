@@ -67,12 +67,12 @@ CREATE TABLE IF NOT EXISTS beliefs (
 );
 
 CREATE TABLE IF NOT EXISTS memory_tiers (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    key         TEXT NOT NULL UNIQUE,
-    tier        TEXT NOT NULL DEFAULT 'warm',
-    path        TEXT,
-    word_count  INTEGER DEFAULT 0,
-    last_accessed TEXT NOT NULL DEFAULT (datetime('now'))
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    key           TEXT NOT NULL UNIQUE,
+    tier          TEXT NOT NULL DEFAULT 'warm',
+    notes         TEXT,
+    last_access   TEXT NOT NULL DEFAULT (datetime('now')),
+    access_count  INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS consolidation_log (
