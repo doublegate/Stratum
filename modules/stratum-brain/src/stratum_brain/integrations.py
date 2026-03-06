@@ -21,7 +21,7 @@ from .sources import (
 )
 
 HOME = Path.home()
-BRAIN_STATE_DIR   = HOME / ".local/share/stratum-brain"
+BRAIN_STATE_DIR   = HOME / ".local/share/stratum"
 STATE_FILE        = BRAIN_STATE_DIR / "state.json"
 CRON_FEED_FILE    = BRAIN_STATE_DIR / "cron-health-feed.md"   # indexed by stratum-lens
 LESSON_FEED_FILE  = BRAIN_STATE_DIR / "lesson-feed.md"        # indexed by stratum-lens
@@ -324,7 +324,7 @@ class HeartbeatResult:
     buffer_unacked: int
     lesson_unresolved: int
     needs_attention: bool
-    # clawd-world + clawd-goals fields (added 2026-02-25)
+    # stratum-mind world + goals fields
     critical_goals: int = 0
     stale_goals: int = 0   # active goals not evaluated in >7 days
     world_entities: int = 0
@@ -443,7 +443,7 @@ def run_heartbeat_integrations() -> HeartbeatResult:
             for domain, count in top:
                 recommendations.append(
                     f"Lesson cluster: {count} unresolved lessons in '{domain}' — "
-                    f"consider: clawd-research queue \"{domain} best practices\" --priority high"
+                    f"consider researching: {domain} best practices"
                 )
     except Exception:
         pass
@@ -458,14 +458,13 @@ def run_heartbeat_integrations() -> HeartbeatResult:
             "stratum-ops": HOME / ".local/bin/stratum-ops",
             "stratum-continuity": HOME / ".local/bin/stratum-continuity",
             "stratum-lens": HOME / ".local/bin/stratum-lens",
-            "deep-report-validator": HOME / ".local/bin/deep-report-validator",
-        }
+                    }
         missing = [name for name, path in core_bins.items() if not path.exists()]
         if missing:
             alerts.append(f"Missing core v5 tools: {', '.join(missing)}")
 
         # Deep report validator status (added 2026-03-06)
-        validator_status = HOME / ".local/share/clawd-report-runbook/validator-status.json"
+        validator_status = HOME / ".local/share/stratum/validator-status.json"
         if validator_status.exists():
             try:
                 vdata = json.loads(validator_status.read_text())
@@ -508,7 +507,7 @@ def run_heartbeat_integrations() -> HeartbeatResult:
     except Exception:
         pass
 
-    # clawd-goals + clawd-world summary (added 2026-02-25; v2 adds stale beliefs 2026-03-05)
+    # stratum-mind goals + world summary
     from .sources import get_goal_stats, get_world_summary
     goal_stats   = get_goal_stats()
     world_summ   = get_world_summary()
@@ -558,7 +557,7 @@ def run_heartbeat_integrations() -> HeartbeatResult:
     )
 
 
-# ── clawd-world + clawd-goals feed integration (added 2026-02-25) ─────────
+# ── stratum-mind world + goals feed integration ─────────────────────────
 
 WORLD_FEED_FILE = BRAIN_STATE_DIR / "world-feed.md"
 GOALS_FEED_FILE = BRAIN_STATE_DIR / "goals-feed.md"
@@ -568,7 +567,7 @@ def update_world_feed() -> None:
     """
     Regenerate the world model feed from mind.db for stratum-lens indexing.
 
-    Writes ~/.local/share/stratum-brain/world-feed.md with entities, beliefs,
+    Writes ~/.local/share/stratum/world-feed.md with entities, beliefs,
     and relations in plain Markdown so stratum-lens can embed and search them.
     Stale beliefs are excluded (marked with stale=1).
     """
@@ -617,7 +616,7 @@ def update_goals_feed() -> None:
     try:
         import sqlite3
         from .sources import GOALS_DB
-        feed = HOME / ".local/share/stratum-brain/goals-feed.md"
+        feed = HOME / ".local/share/stratum/goals-feed.md"
         if not GOALS_DB.exists():
             return
         conn = sqlite3.connect(GOALS_DB)

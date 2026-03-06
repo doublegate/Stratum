@@ -2,10 +2,8 @@
 sources.py — Read from all five tool data stores.
 
 stratum-brain aggregates:
-  - clawd-context-watch  → ~/.local/share/clawd-context-watch/status.json
-  - clawd-cron-health    → ~/.local/share/clawd-cron-health/health.db
-  - clawd-stash          → ~/.local/share/clawd-stash/stash.db
-  - clawd-buffer         → ~/.local/share/clawd-buffer/buffer.db
+  - stratum-watch  → ~/.local/share/stratum/watch.db
+  - stratum-mind   → ~/.local/share/stratum/mind.db (stash, lessons)
   - stratum-lens           → subprocess call to `stratum-lens query`
 """
 
@@ -18,10 +16,10 @@ from pathlib import Path
 from typing import Any
 
 HOME = Path.home()
-CONTEXT_WATCH_STATUS = HOME / ".local/share/clawd-context-watch/status.json"
-CRON_HEALTH_DB       = HOME / ".local/share/clawd-cron-health/health.db"
+CONTEXT_WATCH_STATUS = HOME / ".local/share/stratum/context-watch-status.json"
+CRON_HEALTH_DB       = HOME / ".local/share/stratum/watch.db"
 STASH_DB             = HOME / ".local/share/stratum/mind.db"   # unified (was clawd-stash/stash.db)
-BUFFER_DB            = HOME / ".local/share/clawd-buffer/buffer.db"
+BUFFER_DB            = HOME / ".local/share/stratum/watch.db"  # unified
 LESSON_DB            = HOME / ".local/share/stratum/mind.db"  # unified (was clawd-lesson/lessons.db)
 STASH_BIN            = HOME / ".local/bin/stratum-mind"        # unified (was clawd-stash)
 LESSON_BIN           = HOME / ".local/bin/stratum-mind"        # unified (was clawd-lesson)
@@ -79,7 +77,7 @@ def get_cron_health(limit: int = 20) -> list[CronRun]:
     """Read cron health directly from OpenClaw jobs.json (authoritative source)."""
     jobs_path = HOME / ".openclaw/cron/jobs.json"
     if not jobs_path.exists():
-        # Fallback to legacy clawd-cron-health DB
+        # Fallback: watch.db may be empty on first run
         if not CRON_HEALTH_DB.exists():
             return []
         try:
@@ -421,7 +419,7 @@ def fmt_age(secs: int) -> str:
     return f"{secs//86400}d ago"
 
 
-# ── clawd-world + clawd-goals integration (added 2026-02-25) ──────────────
+# ── stratum-mind world + goals integration ───────────────────────────────
 
 WORLD_DB    = HOME / ".local/share/stratum/mind.db"   # unified (was clawd-world/world.db)
 GOALS_DB    = HOME / ".local/share/stratum/mind.db"   # unified (was clawd-goals/goals.db)

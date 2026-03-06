@@ -208,7 +208,7 @@ fi
 # ── Final health check ────────────────────────────────────────────────────────
 header "Health Check"
 if command -v stratum-brain >/dev/null 2>&1; then
-  run "stratum-brain status"
+  run "stratum-brain status"  # if this fails, run: source ~/.profile && stratum-brain status
 else
   warn "stratum-brain not in PATH yet — open a new shell, then run: stratum-brain status"
 fi

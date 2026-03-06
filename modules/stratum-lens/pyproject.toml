@@ -2,7 +2,7 @@
 name = "stratum-lens"
 version = "0.1.1"
 description = "Semantic workspace indexer for OpenClaw — query your memory files by meaning"
-authors = [{name = "{{AGENT_NAME}}", email = "undertow@parobek.org"}]
+authors = [{name = "Stratum", email = "agent@example.com"}]
 requires-python = ">=3.11"
 
 dependencies = [

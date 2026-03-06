@@ -9,7 +9,7 @@ use std::path::PathBuf;
 
 pub fn db_path() -> PathBuf {
     let base = data_dir().unwrap_or_else(|| PathBuf::from("~/.local/share"));
-    base.join("clawd").join("mind.db")
+    base.join("stratum").join("mind.db")
 }
 
 pub fn open() -> Result<Connection> {

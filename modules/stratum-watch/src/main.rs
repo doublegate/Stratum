@@ -23,7 +23,7 @@ use std::process::Command;
 
 fn db_path() -> PathBuf {
     data_dir().unwrap_or_else(|| PathBuf::from("~/.local/share"))
-        .join("clawd").join("watch.db")
+        .join("stratum").join("watch.db")
 }
 
 fn open_db() -> Result<Connection> {
@@ -110,9 +110,7 @@ enum ObserveAction {
 
 fn cron_status() -> Result<()> {
     let home = home_dir().unwrap();
-    // Use unified watch.db (migrated from clawd-cron-health); fall back to legacy path
     let db = home.join(".local/share/stratum/watch.db");
-    let db = if db.exists() { db } else { home.join(".local/share/clawd-cron-health/health.db") };
     if !db.exists() {
         println!("{}", "No cron history DB found".dimmed());
         return Ok(());
