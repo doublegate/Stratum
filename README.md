@@ -7,7 +7,6 @@
 [![Rust](https://img.shields.io/badge/core-Rust-orange.svg)](https://www.rust-lang.org/)
 [![Python](https://img.shields.io/badge/hub-Python-4a90d9.svg)](https://www.python.org/)
 
-<img src="assets/stratum-logo.png" width="160" alt="Stratum logo" />
 
 </div>
 
@@ -20,6 +19,8 @@ Out of the box, AI agents are stateless — each session starts cold, with no me
 Install it once. Your agent gets better every session.
 
 ---
+
+![Stratum logo](assets/stratum-logo.png)
 
 ## What Stratum Is
 
