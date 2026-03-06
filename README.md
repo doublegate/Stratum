@@ -19,8 +19,8 @@ Out of the box, AI agents are stateless — each session starts cold, with no me
 Install it once. Your agent gets better every session.
 
 ---
-
 <img src="assets/stratum-logo.png" width="200" alt="Stratum logo" />
+
 ## What Stratum Is
 
 Stratum is **infrastructure**, not an agent. It sits beneath your OpenClaw agent and makes it meaningfully more capable:
