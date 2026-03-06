@@ -46,6 +46,25 @@ Stratum is **infrastructure**, not an agent. It sits beneath your OpenClaw agent
 
 <br/>
 
+The diagram above shows the full ecosystem. Text summary:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Your OpenClaw Agent                   │
+└────────────────────────┬────────────────────────────────┘
+                         │ heartbeat / cron triggers
+┌────────────────────────▼────────────────────────────────┐
+│              stratum-brain  [Integration Hub]           │
+│   aggregates all modules · hybrid FTS5 search           │
+│   belief decay · graph traversal · nightly consolidation│
+└──┬──────┬──────┬──────┬──────┬──────┬──────┬───────┬────┘
+   │      │      │      │      │      │      │       │
+  mind  watch  ops  contin  reports agent  boot    lens
+[Rust] [Rust] [Rust] [Py]    [Py]  [Rust] [Rust]   [Py]
+   │      │      │                                   │
+mind.db watch.db ops.db                           ChromaDB
+    (unified SQLite)                         (vector index)
+```
 
 **9 core modules:**
 
