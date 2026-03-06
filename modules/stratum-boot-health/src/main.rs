@@ -108,10 +108,10 @@ fn check_dkms_modules() -> Vec<ModuleCheck> {
                     let stdout = String::from_utf8_lossy(&out.stdout);
                     let signer = stdout.lines()
                         .find(|l| l.starts_with("signer:"))
-                        .map(|l| l.splitn(2, ':').nth(1).unwrap_or("").trim().to_string());
+                        .map(|l| l.split_once(':').map(|x| x.1.trim().to_string()).unwrap_or_default());
                     let hashalgo = stdout.lines()
                         .find(|l| l.starts_with("sig_hashalgo:"))
-                        .map(|l| l.splitn(2, ':').nth(1).unwrap_or("").trim().to_string());
+                        .map(|l| l.split_once(':').map(|x| x.1.trim().to_string()).unwrap_or_default());
                     let ok = signer.as_deref() == Some(EXPECTED_CERT_CN)
                         && hashalgo.as_deref() == Some("sha512");
                     let detail = match (&signer, &hashalgo) {
