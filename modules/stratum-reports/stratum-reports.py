@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 stratum-reports — Stratum unified report pipeline CLI
@@ -16,7 +17,7 @@ from pathlib import Path
 HOME = Path.home()
 BINS = {
     "runbook":  HOME / ".local/bin/clawd-report-runbook",
-    "validate": HOME / ".local/bin/deep-report-validator",
+    "validate": HOME / ".local/bin/stratum-reports",  # self-validates
     "ingest":   HOME / ".local/bin/clawd-report-ingest",
     "timeline": HOME / ".local/bin/report-timeline",
 }
@@ -38,7 +39,7 @@ def delegate(name: str, extra_args: list[str]) -> int:
 
 def cmd_status() -> int:
     print("=== stratum-reports status ===")
-    reports_dir = HOME / "clawd/reports/markdown"
+    reports_dir = Path(os.environ.get("STRATUM_WORKSPACE", str(HOME / "clawd"))) / "reports/markdown"
     if reports_dir.exists():
         reports = sorted(reports_dir.glob("*.md"))
         print(f"Reports: {len(reports)} markdown files in {reports_dir}")

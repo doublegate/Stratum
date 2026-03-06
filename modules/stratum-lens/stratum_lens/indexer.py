@@ -13,14 +13,14 @@ Design:
   - State file format: { "path": mtime_float, ... }
 
 Target files (from your workspace):
-  ~/.stratum-workspace/MEMORY.md          — long-term curated memory
-  ~/.stratum-workspace/IDENTITY.md        — who your agent is
-  ~/.stratum-workspace/SOUL.md            — values and aspirations
-  ~/.stratum-workspace/USER.md            — about the user
-  ~/.stratum-workspace/TOOLS.md           — tool notes and configs
-  ~/.stratum-workspace/AGENTS.md          — workspace conventions
-  ~/.stratum-workspace/memory/*.md        — daily notes and active context
-  ~/.stratum-workspace/reports/markdown/  — deep reports (optional, large)
+  $STRATUM_WORKSPACE/MEMORY.md          — long-term curated memory
+  $STRATUM_WORKSPACE/IDENTITY.md        — who your agent is
+  $STRATUM_WORKSPACE/SOUL.md            — values and aspirations
+  $STRATUM_WORKSPACE/USER.md            — about the user
+  $STRATUM_WORKSPACE/TOOLS.md           — tool notes and configs
+  $STRATUM_WORKSPACE/AGENTS.md          — workspace conventions
+  $STRATUM_WORKSPACE/memory/*.md        — daily notes and active context
+  $STRATUM_WORKSPACE/reports/markdown/  — deep reports (optional, large)
 """
 
 from __future__ import annotations
@@ -40,6 +40,14 @@ from .store import WorkspaceStore
 def state_path() -> Path:
     """Return the path to the mtime tracking state file."""
     base = Path(os.environ.get("HOME", "/")) / ".local/share/stratum-lens"
+
+
+def _workspace() -> Path:
+    """Return the Stratum workspace path from env var or default ~/clawd."""
+    ws = os.environ.get("STRATUM_WORKSPACE", "")
+    if ws:
+        return Path(ws).expanduser()
+    return Path.home() / "clawd"
     base.mkdir(parents=True, exist_ok=True)
     return base / "index-state.json"
 
@@ -64,15 +72,15 @@ def save_state(state: dict[str, float]) -> None:
 
 # Core workspace files — always indexed
 CORE_TARGETS: list[str] = [
-    "~/.stratum-workspace/MEMORY.md",
-    "~/.stratum-workspace/IDENTITY.md",
-    "~/.stratum-workspace/SOUL.md",
-    "~/.stratum-workspace/USER.md",
-    "~/.stratum-workspace/TOOLS.md",
-    "~/.stratum-workspace/AGENTS.md",
-    "~/.stratum-workspace/HEARTBEAT.md",
-    "~/.stratum-workspace/LEARNING.md",          # growth narrative — indexed for self-referential queries
-    "~/.stratum-workspace/memory/active-context.md",
+    str(_workspace() / "MEMORY.md"),
+    str(_workspace() / "IDENTITY.md"),
+    str(_workspace() / "SOUL.md"),
+    str(_workspace() / "USER.md"),
+    str(_workspace() / "TOOLS.md"),
+    str(_workspace() / "AGENTS.md"),
+    str(_workspace() / "HEARTBEAT.md"),
+    str(_workspace() / "LEARNING.md"),          # growth narrative — indexed for self-referential queries
+    str(_workspace() / "memory/active-context.md"),
     # stratum-brain integration feeds (updated by clawd-cron-health and clawd-lesson)
     "~/.local/share/stratum-brain/cron-health-feed.md",
     "~/.local/share/stratum-brain/lesson-feed.md",
@@ -97,11 +105,11 @@ CORE_TARGETS: list[str] = [
 # Glob patterns — all matching files are indexed
 GLOB_TARGETS: list[tuple[str, str]] = [
     # (base_dir, glob_pattern)
-    ("~/.stratum-workspace/memory", "*.md"),          # daily notes and active context
-    ("~/.stratum-workspace/memory/warm", "*.md"),     # warm tier topic files (partitioned from MEMORY.md)
-    ("~/.stratum-workspace/skills", "*/SKILL.md"),    # skill documentation
-    ("~/.stratum-workspace/research", "*.md"),        # autonomous research notes
-    ("~/.stratum-workspace/reports/markdown", "*.md"),  # deep reports — always indexed
+    (str(_workspace() / "memory"), "*.md"),          # daily notes and active context
+    (str(_workspace() / "memory/warm"), "*.md"),     # warm tier topic files (partitioned from MEMORY.md)
+    (str(_workspace() / "skills"), "*/SKILL.md"),    # skill documentation
+    (str(_workspace() / "research"), "*.md"),        # autonomous research notes
+    (str(_workspace() / "reports/markdown"), "*.md"),  # deep reports — always indexed
     ("~/.local/share/clawd-report-ingest", "*.md"),  # report insight extractions
 ]
 
@@ -171,7 +179,7 @@ def run_index(
     Parameters:
         store           — open WorkspaceStore to write chunks into
         force           — re-index all files even if mtime unchanged
-        include_reports — also index ~/.stratum-workspace/reports/markdown/*.md
+        include_reports — also index $STRATUM_WORKSPACE/reports/markdown/*.md
         verbose         — print per-file progress
 
     Returns IndexStats with a summary of what was done.

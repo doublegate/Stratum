@@ -479,7 +479,7 @@ def run_heartbeat_integrations() -> HeartbeatResult:
     # Continuity integration (added 2026-02-28)
     try:
         continuity_bin = HOME / ".local/bin/stratum-continuity"
-        continuity_feed = HOME / ".local/share/stratum-continuity/feed.md"
+        continuity_feed = HOME / ".local/share/stratum/continuity-feed.md"
         continuity_status = HOME / ".local/share/stratum-continuity/status.json"
         if not continuity_bin.exists():
             alerts.append("stratum-continuity missing — continuity snapshots unavailable")
@@ -713,17 +713,17 @@ def assemble_session_context(token_budget: int = 2000) -> str:
 # ── New tool integrations (2026-03-03) ────────────────────────────────────────
 
 def _refresh_version_watch_feed() -> None:
-    """Run clawd-version-watch --quiet; it updates its own feed.md if versions changed."""
+    """Run stratum-watch version check; updates version feed if drift detected."""
     import subprocess
-    vw = HOME / ".local" / "bin" / "clawd-version-watch"
+    vw = HOME / ".local" / "bin" / "stratum-watch"
     if vw.exists():
         subprocess.run([str(vw), "--quiet"], capture_output=True, timeout=30)
 
 
 def _refresh_report_timeline_feed() -> None:
-    """Regenerate report-timeline feed.md for lens indexing (every heartbeat)."""
+    """Regenerate stratum-reports timeline feed for lens indexing (every heartbeat)."""
     import subprocess
-    feed_path = HOME / ".local" / "share" / "clawd-report-timeline" / "feed.md"
+    feed_path = HOME / ".local" / "share" / "stratum" / "report-timeline-feed.md"
     rt = HOME / ".local" / "bin" / "report-timeline"
     if not rt.exists():
         return
@@ -748,14 +748,14 @@ def _run_cron_cleanup() -> None:
 
 
 def _refresh_pipeline_timer_feed() -> None:
-    """Regenerate clawd-pipeline-timer feed.md for lens indexing (every heartbeat).
+    """Regenerate pipeline-timer feed for lens indexing (every heartbeat).
 
-    Runs 'clawd-pipeline-timer status' which internally writes the feed.md file.
+    Runs 'stratum-pipeline-timer status' which internally writes the feed.md file.
     Low-cost: pure SQLite read, no external calls.
     """
     import subprocess
     pt = HOME / ".local" / "bin" / "clawd-pipeline-timer"
-    feed = HOME / ".local" / "share" / "clawd-pipeline-timer" / "feed.md"
+    feed = HOME / ".local" / "share" / "stratum" / "pipeline-timer-feed.md"
     if not pt.exists():
         return
     try:

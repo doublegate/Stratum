@@ -46,7 +46,7 @@ add_cron "Weekly-Self-Reflection" "0 2 * * 0" "anthropic/claude-opus-4-6" \
   "Read all core workspace files (SOUL.md, AGENTS.md, HEARTBEAT.md, MEMORY.md, USER.md). Run stratum-brain status. Make targeted updates to SOUL.md and LEARNING.md for any genuine shifts in understanding or behavior since last week. Write a brief reflection summary to memory/YYYY-MM-DD.md."
 
 add_cron "World-Model-Sync" "15 3 * * *" "anthropic/claude-sonnet-4-6" \
-  "Run bash ~/clawd/scripts/world-model-sync.sh to update dynamic beliefs in stratum-mind. Then stratum-mind world status to verify. Log result to memory/YYYY-MM-DD.md."
+  "Run stratum-mind world status to check the knowledge graph. Update any stale dynamic beliefs (project versions, active tasks, host info) via stratum-mind world add belief. Log any updated belief count to memory/YYYY-MM-DD.md."
 
 # ── Continuity ────────────────────────────────────────────────────────────────
 echo "Continuity:"

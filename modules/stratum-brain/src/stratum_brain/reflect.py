@@ -132,9 +132,9 @@ def get_reflection_context() -> ReflectionContext:
                 "memory.md": "MEMORY.md",      "tools.md": "TOOLS.md",
                 "ffmpeg": "ffmpeg",             "synology": "Synology",
                 "home assistant": "Home Asst",  "hass-cli": "Home Asst",
-                "openclaw": "OpenClaw",         "phantom protocol": "PHANTOM",
+                "openclaw": "OpenClaw",
                 "stratum-lens": "stratum-lens",     "stratum-brain": "stratum-brain",
-                "veridianos": "VeridianOS",     "chromadb": "ChromaDB",
+                "chromadb": "ChromaDB",
                 "bevy": "Bevy",                 " gog ": "gog/Gmail",
                 "gog gmail": "gog/Gmail",       "gog calendar": "gog/Gmail",
             }
