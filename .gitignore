@@ -31,7 +31,7 @@ config/local/
 # Personal data (NEVER commit these)
 MEMORY.md
 USER.md
-memory/
+/memory/
 .stratum/
 
 # OS
