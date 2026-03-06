@@ -7,6 +7,8 @@
 [![Rust](https://img.shields.io/badge/core-Rust-orange.svg)](https://www.rust-lang.org/)
 [![Python](https://img.shields.io/badge/hub-Python-4a90d9.svg)](https://www.python.org/)
 
+<img src="assets/stratum-logo.png" width="160" alt="Stratum logo" />
+
 </div>
 
 ---
@@ -38,8 +40,13 @@ Stratum is **infrastructure**, not an agent. It sits beneath your OpenClaw agent
 ## Architecture
 
 <div align="center">
-<img src="assets/stratum-logo.png" width="220" alt="Stratum logo" />
+<img src="assets/stratum-architecture.png" alt="Stratum ecosystem architecture diagram" width="100%" />
+<br/><sub><i>9 core modules · 3 unified SQLite databases · stratum-brain integration hub · local-only data</i></sub>
 </div>
+
+<br/>
+
+The diagram above shows the full ecosystem. Text summary:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
