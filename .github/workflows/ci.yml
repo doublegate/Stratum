@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ── Rust modules ──────────────────────────────────────────────────────────
+  rust:
+    name: Rust (${{ matrix.module }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module:
+          - stratum-mind
+          - stratum-watch
+          - stratum-ops
+          - stratum-agent-monitor
+          - stratum-boot-health
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            modules/${{ matrix.module }}/target
+          key: ${{ runner.os }}-cargo-${{ matrix.module }}-${{ hashFiles(format('modules/{0}/Cargo.toml', matrix.module)) }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.module }}-
+
+      - name: Check
+        working-directory: modules/${{ matrix.module }}
+        run: cargo check --release
+
+      - name: Clippy
+        working-directory: modules/${{ matrix.module }}
+        run: cargo clippy -- -D warnings
+
+      - name: Test
+        working-directory: modules/${{ matrix.module }}
+        run: cargo test
+
+      - name: Format check
+        working-directory: modules/${{ matrix.module }}
+        run: cargo fmt --check
+
+  # ── Python modules ────────────────────────────────────────────────────────
+  python:
+    name: Python (${{ matrix.module }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module:
+          - stratum-brain
+          - stratum-lens
+          - stratum-continuity
+          - stratum-reports
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install module
+        working-directory: modules/${{ matrix.module }}
+        run: uv sync --dev 2>/dev/null || uv pip install -e . --system 2>/dev/null || true
+
+      - name: Syntax check
+        working-directory: modules/${{ matrix.module }}
+        run: |
+          uv run python -m py_compile $(find . -name "*.py" \
+            ! -path "*/__pycache__/*" ! -path "*/.venv/*" \
+            ! -path "*/site-packages/*") 2>/dev/null || \
+          python3 -m py_compile $(find . -name "*.py" \
+            ! -path "*/__pycache__/*" ! -path "*/.venv/*")
+
+  # ── Schema validation ─────────────────────────────────────────────────────
+  schemas:
+    name: DB Schema Syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate SQL schemas
+        run: |
+          for sql in scripts/init-*.sql; do
+            echo "Checking $sql..."
+            sqlite3 /tmp/test-$(basename $sql .sql).db < "$sql"
+            echo "  ✓ $sql"
+          done
+
+  # ── Config validation ─────────────────────────────────────────────────────
+  config:
+    name: Config Example Valid JSON
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate config example
+        run: python3 -m json.tool config/examples/config.example.json > /dev/null && echo "✓ Valid JSON"
