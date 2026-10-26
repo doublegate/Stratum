@@ -138,7 +138,7 @@ pub fn weekly(conn: &Connection) -> Result<()> {
                 (words, title)
             })
             .collect();
-        section_sizes.sort_by(|a, b| b.0.cmp(&a.0));
+        section_sizes.sort_by_key(|a| std::cmp::Reverse(a.0));
         for (words, title) in section_sizes.iter().take(3) {
             println!(
                 "  - ## {} ({} words) → candidate for warm tier demotion",
