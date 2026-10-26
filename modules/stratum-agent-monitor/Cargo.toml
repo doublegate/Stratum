@@ -8,7 +8,7 @@ description = "Stratum coding agent session monitor — nudges Claude Code at co
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"
 chrono = "0.4"
-dirs = "5"
+dirs = "7"
 
 [[bin]]
 name = "stratum-agent-monitor"

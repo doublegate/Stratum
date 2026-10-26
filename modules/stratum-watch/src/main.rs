@@ -309,7 +309,7 @@ fn observe_status(conn: &Connection) -> Result<()> {
                 "·".dimmed(),
                 source.bold(),
                 event,
-                &at[..16].dimmed()
+                at[..16].dimmed()
             );
             if let Some(d) = detail {
                 println!("    {}", d.lines().next().unwrap_or("").dimmed());

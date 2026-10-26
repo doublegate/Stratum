@@ -74,7 +74,7 @@ pub fn list(conn: &Connection, tree: bool, status_filter: Option<&str>) -> Resul
             id.to_string().dimmed(),
             pri_color,
             title.bold(),
-            &updated_at[..10].dimmed()
+            updated_at[..10].dimmed()
         );
     }
     Ok(())

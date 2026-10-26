@@ -3,13 +3,13 @@ name = "stratum-brain"
 version = "0.2.0"
 requires-python = ">=3.12"
 dependencies = [
-    "click>=8",
-    "rich>=13",
+    "click>=8.5.0",
+    "rich>=15.0.0",
 ]
 
 [project.scripts]
 stratum-brain = "stratum_brain.cli:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.32.4"]
 build-backend = "hatchling.build"

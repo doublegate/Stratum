@@ -22,7 +22,7 @@ jobs:
           - stratum-boot-health
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -30,13 +30,13 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             modules/${{ matrix.module }}/target
-          key: ${{ runner.os }}-cargo-${{ matrix.module }}-${{ hashFiles(format('modules/{0}/Cargo.toml', matrix.module)) }}
+          key: ${{ runner.os }}-cargo-${{ matrix.module }}-${{ hashFiles(format('modules/{0}/Cargo.toml', matrix.module), format('modules/{0}/Cargo.lock', matrix.module)) }}
           restore-keys: |
             ${{ runner.os }}-cargo-${{ matrix.module }}-
 
@@ -69,10 +69,10 @@ jobs:
           - stratum-reports
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v10
 
       - name: Set up Python
         run: uv python install 3.12
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Validate SQL schemas
         run: |
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Validate config example
         run: python3 -m json.tool config/examples/config.example.json > /dev/null && echo "✓ Valid JSON"
